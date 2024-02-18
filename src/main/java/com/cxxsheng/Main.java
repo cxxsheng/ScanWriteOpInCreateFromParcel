@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class Main {
 
     public static String[] hitStrings = {
@@ -67,6 +68,10 @@ public class Main {
     };
 
 
+    public static String[] hitStrings2 = {
+//            "forName",
+            "File"
+    };
 
     private static void setExclude(){
         List<String> excudeList = new ArrayList();
@@ -78,12 +83,14 @@ public class Main {
 
 
     private static void callSootMethod(SootMethod method, List<String> calledMethodSig){
+
         if (calledMethodSig.contains(method.toString())){
-//                        System.out.println("skipped called method " + method);
+            System.out.println("skipped called method " + method);
             return;
         }
         else
             calledMethodSig.add(method.toString());
+
 
         if (!method.isConcrete())
             return;
@@ -92,15 +99,17 @@ public class Main {
         }
 
         Body body = method.retrieveActiveBody();
-        if (body.toString().contains("write")){
-            for (String hitString : hitStrings){
+//        System.out.println("entering " + body.toString());
+
+//        if (body.toString().contains("forName")){
+            for (String hitString : hitStrings2){
                 if (body.toString().contains(hitString)){
                     System.out.println("FBI WANTING!!!!");
                     System.out.println(body);
 
                     break;
                 }
-            }
+//            }
 //                        System.out.println(body);
         }
         method.getParameterTypes();
@@ -137,7 +146,7 @@ public class Main {
         Options.v().set_output_format(Options.output_format_jimple);
         Options.v().set_process_dir(Arrays.asList(p));
         Options.v().set_process_multiple_dex(true);
-//                Options.v().set_wrong_staticness(Options.wrong_staticness_ignore);
+//      Options.v().set_wrong_staticness(Options.wrong_staticness_ignore);
         Options.v().set_allow_phantom_refs(true);
         Options.v().set_whole_program(true);
         setExclude();
@@ -154,7 +163,8 @@ public class Main {
                     String methodSig = "java.lang.Object createFromParcel(android.os.Parcel)";
                     SootMethod method = clazz.getMethod(methodSig);
                     System.out.println("calling " + methodSig + " in "+ clazz);
-                    callSootMethod(method,new ArrayList<>());
+//                    if (clazz.toString().contains("PackageParser"))
+                    { callSootMethod(method,new ArrayList<>()); }
                     break;
                 }
 
